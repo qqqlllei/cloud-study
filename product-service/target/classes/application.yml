@@ -1,0 +1,40 @@
+server:
+  port: 8086
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+spring:
+  application:
+    name: product
+
+feign:
+  hystrix:
+    enabled: true #默认feign是不开启hystrix的，所以要设置该配置为true
+
+management:
+  security:
+    enabled: false
+
+info:
+  version: "0.0.1-SNAPSHOT"
+  app:
+   name: "product-service"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
