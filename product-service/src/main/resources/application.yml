@@ -9,7 +9,11 @@ eureka:
 spring:
   application:
     name: product
-
+  zipkin:
+    base-url: http://localhost:8001
+  sleuth:
+      sampler:
+        percentage: 1.0
 feign:
   hystrix:
     enabled: true #默认feign是不开启hystrix的，所以要设置该配置为true
