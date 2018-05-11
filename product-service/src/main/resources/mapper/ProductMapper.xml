@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qqlei.cloud.product.dao.ProductMapper">
+
+	<resultMap id="RM_Product" type="com.qqlei.cloud.product.domain.Product">
+        <result property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="name" column="name"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,category_id,brand_id,name
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	    <![CDATA[
+	        INSERT INTO product ( 
+	        	id ,
+	        	category_id ,
+	        	brand_id ,
+	        	name 
+	        ) VALUES (
+	        	#{id} ,
+	        	#{categoryId} ,
+	        	#{brandId} ,
+	        	#{name} 
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- 批量保存 -->
+	<insert id="batchInsert">
+	    <![CDATA[
+	        INSERT INTO product (
+	        		id ,
+	        		category_id ,
+	        		brand_id ,
+	        		name 
+	        ) VALUES 
+	         ]]>
+	        <foreach item="item" collection="list"   separator=",">
+	        	(
+					#{item.id} ,
+					#{item.categoryId} ,
+					#{item.brandId} ,
+					#{item.name} 
+	        	)
+			</foreach>
+	   
+	</insert>
+
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="categoryId != null">
+				category_id = #{categoryId} ,
+			</if>
+			<if test="brandId != null">
+				brand_id = #{brandId} ,
+			</if>
+			<if test="name != null and name != ''">
+				name = #{name} 
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey">
+		UPDATE product
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 
+	</update>
+
+		<!-- 修改 -->
+	<update id="batchUpdateByIds">
+		UPDATE product
+		<include refid="update_sql" />
+		WHERE
+		id IN
+			<foreach item="ids" collection="list" open="(" separator="," close=")">
+				#{ids}
+			</foreach>
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteByPrimaryKey">
+    	<![CDATA[
+        	DELETE FROM product 
+        	WHERE
+        		id = #{id} 
+    	]]>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDeleteByIds">
+        DELETE FROM product 
+        WHERE id IN 
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+	<!-- selsect -->
+	<select id="selectByPrimaryKey" resultMap="RM_Product">
+		SELECT
+		<include refid="columns" />
+		FROM product
+		WHERE
+		id = #{id} 
+	</select>
+
+
+
+
+
+	<!-- 模糊查询这样： 字段名 LIKE CONCAT('%',CONCAT(#{model.userName},'%')) -->
+	<sql id="findPage_where">
+		<where>
+				<if test="id != null">
+					AND id = #{id}
+				</if>
+				<if test="categoryId != null">
+					AND category_id = #{categoryId}
+				</if>
+				<if test="brandId != null">
+					AND brand_id = #{brandId}
+				</if>
+				<if test="name != null and name !=''">
+					AND name = #{name}
+				</if>
+		</where>
+	</sql>
+
+	<!-- selsect by obj -->
+	<select id="listByObj" resultMap="RM_Product" parameterType="com.qqlei.cloud.product.domain.Product">
+	SELECT
+	<include refid="columns" />
+	FROM product
+	<include refid="findPage_where" />
+	</select>
+
+
+	<!-- 获取总数 -->
+	<select id="listPageCount" resultType="long" parameterType="map">
+		SELECT COUNT(1)
+		FROM product
+		<include refid="findPage_where" />
+	</select>  
+
+	<select id="listPage" resultMap="RM_Product" parameterType="map">
+		 SELECT
+		<include refid="columns" />
+		FROM product
+		<include refid="findPage_where" />
+
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+		
+		<if test="offset != null and pageSize != null">
+			LIMIT  #{offset}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>
