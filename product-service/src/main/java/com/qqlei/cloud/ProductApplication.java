@@ -15,7 +15,7 @@ import org.springframework.context.annotation.ComponentScans;
  */
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"com.qqlei.cloud","com.reliable.message.client.feign"})
 @EnableHystrix
 @EnableHystrixDashboard
 @ComponentScan(basePackages = {"com.qqlei.cloud","com.reliable.message.client"})

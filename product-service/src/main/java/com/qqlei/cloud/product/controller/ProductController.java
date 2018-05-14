@@ -5,7 +5,8 @@ import com.qqlei.cloud.api.UserFeign;
 import com.qqlei.cloud.api.pojo.User;
 import com.qqlei.cloud.product.domain.Product;
 import com.qqlei.cloud.product.service.ProductService;
-import com.reliable.message.client.model.domain.MqMessageData;
+
+import com.reliable.message.model.domain.MqMessageData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
